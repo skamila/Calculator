@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Kalkulator</string>
+    <string name="simple_button">Prosty</string>
+    <string name="advanced_button">Zaawansowany</string>
+    <string name="about_button">O programie</string>
+    <string name="author">Wykonała Kamila Struszczak</string>
+    <string name="description">Aplikacja pozwala na wykonywanie prostych oraz zaawansowanych obliczeń.</string>
+    <string name="exit_button">Wyjście</string>
+</resources>

@@ -1,0 +1,34 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="NumberButton">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ColorButton">
+        <item name="android:background">@color/sea</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="OtherButton">
+        <item name="android:background">@color/ligthGrey</item>
+        <item name="android:textColor">@color/sea</item>
+    </style>
+
+    <style name="AdvancedButton">
+        <item name="android:background">@color/mediumGrey</item>
+        <item name="android:textColor">@color/darkGrey</item>
+    </style>
+
+
+</resources>

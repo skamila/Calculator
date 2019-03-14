@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sea">#009688</color>
+    <color name="ligthGrey">#EBECEC</color>
+    <color name="mediumGrey">#CFD4D6</color>
+    <color name="darkGrey">#686C6D</color>
+    <color name="white">#FEFFFF</color>
+    <color name="black">#0C0C0C</color>
+</resources>
