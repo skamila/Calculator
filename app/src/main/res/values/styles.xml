@@ -16,7 +16,7 @@
     </style>
 
     <style name="ColorButton">
-        <item name="android:background">@color/sea</item>
+        <item name="android:backgroundTint">@color/sea</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

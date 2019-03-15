@@ -60,13 +60,13 @@ public class MenuFragment extends Fragment {
     }
 
     public interface MenuEventListener{
-        void onSimpleButtonPressed(View view);
+        void onSimpleCalcButtonPressed(View view);
         void onAdvancedCalcButtonPressed(View view);
         void onAboutButtonPressed(View view);
         void onExitButtonPressed(View view);
     }
 
-    private View.OnClickListener simpleCalc = (View view) -> menuEventListener.onSimpleButtonPressed(view);
+    private View.OnClickListener simpleCalc = (View view) -> menuEventListener.onSimpleCalcButtonPressed(view);
     private View.OnClickListener advancedCalc = (View view) -> menuEventListener.onAdvancedCalcButtonPressed(view);
     private View.OnClickListener about = (View view) -> menuEventListener.onAboutButtonPressed(view);
     private View.OnClickListener exit = (View view) -> menuEventListener.onExitButtonPressed(view);

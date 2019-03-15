@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
     }
 
     @Override
-    public void onSimpleButtonPressed(View view){
+    public void onSimpleCalcButtonPressed(View view){
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_container, new SimpleFragment());
@@ -64,5 +64,11 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
         finish();
 
     }
+
+    public void onDigitButtonPressed(View view){}
+
+    public void onOperationButtonPressed(View view){}
+
+    public void onClearButtonPressed(View view){}
 
 }
