@@ -25,7 +25,7 @@
 
         <Button
             android:id="@+id/simple"
-            style="@style/ColorButton"
+            style="@style/MenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onSimpleCalcButtonPressed"
@@ -33,21 +33,21 @@
 
         <Button
             android:id="@+id/advanced"
-            style="@style/ColorButton"
+            style="@style/MenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/advanced_button" />
 
         <Button
             android:id="@+id/about"
-            style="@style/ColorButton"
+            style="@style/MenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/about_button" />
 
         <Button
             android:id="@+id/exit"
-            style="@style/ColorButton"
+            style="@style/MenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/exit_button" />

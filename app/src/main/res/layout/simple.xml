@@ -8,13 +8,21 @@
     tools:context=".activities.MainActivity">
 
     <TextView
-        android:id="@+id/display"
-        android:layout_width="wrap_content"
+        android:id="@+id/display2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="111dp"
-        tools:layout_editor_absoluteY="144dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="50dp"
+        android:text="0"
+        android:textAlignment="textEnd"
+        android:textSize="72sp"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:columnCount="4"
