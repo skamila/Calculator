@@ -68,7 +68,7 @@
             style="@style/OtherButton"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:text="ˣ"
+            android:text="×"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1" />
 

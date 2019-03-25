@@ -75,12 +75,30 @@ public class AdvancedFragment extends Fragment {
         view.findViewById(R.id.sub).setOnClickListener(operationButtonClick);
         view.findViewById(R.id.multi).setOnClickListener(operationButtonClick);
         view.findViewById(R.id.div).setOnClickListener(operationButtonClick);
-        view.findViewById(R.id.equal).setOnClickListener(operationButtonClick);
+        view.findViewById(R.id.powY).setOnClickListener(operationButtonClick);
+
+        view.findViewById(R.id.percent).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.changeSign).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.root).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.sin).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.cos).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.tan).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.pow2).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.ln).setOnClickListener(fastOperationButtonClick);
+        view.findViewById(R.id.log).setOnClickListener(fastOperationButtonClick);
+
+        view.findViewById(R.id.equal).setOnClickListener(equalButtonClick);
+
+        view.findViewById(R.id.ac).setOnClickListener(equalButtonClick);
+        view.findViewById(R.id.c).setOnClickListener(clearButtonClick);
 
     }
 
     private View.OnClickListener digitButtonClick = (View view) -> buttonListener.onDigitClick(view);
     private View.OnClickListener dotButtonClick = (View view) -> buttonListener.onDotClick(view);
     private View.OnClickListener operationButtonClick = (View view) -> buttonListener.onOperationClick(view);
+    private View.OnClickListener fastOperationButtonClick = (View view) -> buttonListener.onFastOperationClick(view);
+    private View.OnClickListener equalButtonClick = (View view) -> buttonListener.onEqualClick(view);
+    private View.OnClickListener clearButtonClick = (View view) -> buttonListener.onClearClick(view);
 
 }
