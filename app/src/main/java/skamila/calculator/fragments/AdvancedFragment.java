@@ -89,7 +89,7 @@ public class AdvancedFragment extends Fragment {
 
         view.findViewById(R.id.equal).setOnClickListener(equalButtonClick);
 
-        view.findViewById(R.id.ac).setOnClickListener(equalButtonClick);
+        view.findViewById(R.id.ac).setOnClickListener(clearButtonClick);
         view.findViewById(R.id.c).setOnClickListener(clearButtonClick);
 
     }

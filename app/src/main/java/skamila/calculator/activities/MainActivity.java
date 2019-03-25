@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 
+import skamila.calculator.Calculator;
 import skamila.calculator.R;
 import skamila.calculator.fragments.AboutFragment;
 import skamila.calculator.fragments.AdvancedFragment;
@@ -19,10 +20,8 @@ import skamila.calculator.fragments.SimpleFragment;
 public class MainActivity extends AppCompatActivity implements MenuFragment.MenuEventListener, CalculatorButtonListener {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private String actualOperation;
     private String actualNumberOnDisplay;
-    private BigDecimal actualValue;
-    private BigDecimal prevValue;
+    private Calculator calculator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +37,8 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         }
 
-        this.actualValue = convertToBigDecimal(0);
-        this.prevValue = convertToBigDecimal(0);
+        this.calculator = new Calculator();
         this.actualNumberOnDisplay = "0";
-        this.actualOperation = "";
 
     }
 
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        if (convertToBigDecimal(actualNumberOnDisplay).equals(convertToBigDecimal(0))) {
+        if (new BigDecimal(actualNumberOnDisplay).equals(new BigDecimal(0))) {
             try{
                 Integer.parseInt(actualNumberOnDisplay);
                 this.actualNumberOnDisplay = String.valueOf(checkNumber(view));
@@ -119,15 +116,14 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        if(!this.actualNumberOnDisplay.equals("")){
+        if(calculator.isActualOperation()){
             onEqualClick(view);
         }
 
-        this.actualOperation = checkOperation(view);
-
-        this.prevValue = convertToBigDecimal(this.actualNumberOnDisplay);
-        this.actualNumberOnDisplay = "0";
-        this.actualValue = convertToBigDecimal(actualNumberOnDisplay);
+        calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
+        calculator.setActualOperation(checkOperation(view));
+        calculator.archiveValue();
+        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
 
         printOnDisplay(display);
 
@@ -138,14 +134,10 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        this.actualOperation = checkFastOperation(view);
-
-        this.actualValue = convertToBigDecimal(actualNumberOnDisplay);
-        this.actualValue = doFastOperation();
-        this.actualNumberOnDisplay = String.valueOf(actualValue);
-
-        this.prevValue = convertToBigDecimal(0);
-        this.actualOperation = "";
+        calculator.setActualOperation(checkFastOperation(view));
+        calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
+        calculator.doOperation();
+        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
 
         printOnDisplay(display);
 
@@ -156,12 +148,9 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        actualValue = convertToBigDecimal(this.actualNumberOnDisplay);
-        this.actualValue = doOperation();
-        this.actualNumberOnDisplay = String.valueOf(actualValue);
-
-        this.actualOperation = "";
-        this.prevValue = convertToBigDecimal(0);
+        calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
+        calculator.doOperation();
+        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
 
         printOnDisplay(display);
 
@@ -169,94 +158,53 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
     @Override
     public void onClearClick(View view){
+
         final TextView display = view.getRootView().findViewById(R.id.display);
-        this.actualNumberOnDisplay = "0";
-        this.actualValue = convertToBigDecimal(this.actualNumberOnDisplay);
-        this.prevValue = convertToBigDecimal(0);
-        this.actualOperation = "";
+
+        if(checkOperation(view).equals("c")){
+            calculator.clear();
+        } else {
+            calculator.clearAll();
+        }
+
+        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
+
         printOnDisplay(display);
     }
 
     private void printOnDisplay(TextView display) {
 
-            this.actualValue = convertToBigDecimal(this.actualNumberOnDisplay);
+        calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
 
-        if(this.actualOperation.equals("")){
-
-            display.setText(String.valueOf(this.actualValue));
-
-            if (this.actualValue.doubleValue() % 1 == 0) {
-                int result = this.actualValue.intValue();
-                display.setText(String.valueOf(result));
-            } else {
-                display.setText(String.valueOf(this.actualValue));
-            }
-
-        } else {
+        if(calculator.isActualOperation()){
 
             String text = "";
 
-            if (this.prevValue.doubleValue() % 1 == 0) {
-                int result = this.prevValue.intValue();
+            if (calculator.getPrevValue().doubleValue() % 1 == 0) {
+                int result = calculator.getPrevValue().intValue();
                 text += String.valueOf(result);
             } else {
-                text += String.valueOf(this.prevValue);
+                text += String.valueOf(calculator.getPrevValue());
             }
 
-            text += this.actualOperation;
+            text += calculator.getActualOperation();
 
             text += this.actualNumberOnDisplay;
 
             display.setText(text);
 
+        } else {
+
+            display.setText(String.valueOf(calculator.getActualOperation()));
+
+            if (calculator.getActualValue().doubleValue() % 1 == 0) {
+                int result = calculator.getActualValue().intValue();
+                display.setText(String.valueOf(result));
+            } else {
+                display.setText(String.valueOf(calculator.getActualValue()));
+            }
+
         }
-    }
-
-    private BigDecimal doOperation() {
-        switch (this.actualOperation) {
-            case "+":
-                return prevValue.add(actualValue);
-            case "-":
-                return prevValue.subtract(actualValue);
-            case "×":
-                return prevValue.multiply(actualValue);
-            case "÷":
-                if(this.actualValue.doubleValue() == 0){
-                    // obsługa dzielenia przez 0
-                    return prevValue;
-                } else {
-                    return prevValue.divide(actualValue);
-                }
-            case "^":
-                return convertToBigDecimal(Math.pow(prevValue.doubleValue(), actualValue.doubleValue()));
-        }
-
-        return actualValue;
-    }
-
-    private BigDecimal doFastOperation() {
-        switch (this.actualOperation) {
-            case "±":
-                return actualValue.multiply(convertToBigDecimal(-1));
-            case "√":
-                return convertToBigDecimal(Math.sqrt(actualValue.doubleValue()));
-            case "%":
-                return actualValue.divide(convertToBigDecimal(100));
-            case "sin":
-                return convertToBigDecimal(Math.sin(actualValue.doubleValue()/57.2957795));
-            case "cos":
-                return convertToBigDecimal(Math.cos(actualValue.doubleValue()/57.2957795));
-            case "tan":
-                return convertToBigDecimal(Math.tan(actualValue.doubleValue()/57.2957795));
-            case "^2":
-                return actualValue.pow(2);
-            case "ln":
-                return convertToBigDecimal(Math.log(actualValue.doubleValue()));
-            case "log":
-                return convertToBigDecimal(Math.log10(actualValue.doubleValue()));
-        }
-
-        return actualValue;
     }
 
     private int checkNumber(View view) {
@@ -296,6 +244,10 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
             return "÷";
         } else if (view.getId() == view.getRootView().findViewById(R.id.powY).getId()) {
             return "^";
+        } else if (view.getId() == view.getRootView().findViewById(R.id.ac).getId()){
+            return "ac";
+        } else if (view.getId() == view.getRootView().findViewById(R.id.c).getId()){
+            return "c";
         } else {
             return "";
         }
@@ -323,14 +275,6 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
         } else {
             return "";
         }
-    }
-
-    private BigDecimal convertToBigDecimal(double number){
-        return BigDecimal.valueOf(number);
-    }
-
-    private BigDecimal convertToBigDecimal(String number){
-        return convertToBigDecimal(Double.parseDouble(number));
     }
 
 }
