@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 import skamila.calculator.Calculator;
 import skamila.calculator.R;
 import skamila.calculator.fragments.AboutFragment;
-import skamila.calculator.fragments.AdvancedFragment;
+import skamila.calculator.fragments.AdvancedCalculatorFragment;
 import skamila.calculator.fragments.CalculatorButtonListener;
 import skamila.calculator.fragments.MenuFragment;
-import skamila.calculator.fragments.SimpleFragment;
+import skamila.calculator.fragments.SimpleCalculatorFragment;
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.MenuEventListener, CalculatorButtonListener {
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
     public void onSimpleCalcButtonPressed(View view) {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_container, new SimpleFragment());
+        fragmentTransaction.replace(R.id.main_container, new SimpleCalculatorFragment());
         fragmentTransaction.addToBackStack(null);   // dzięki temu zapisujemy replace na stosie i możemy się cofnąć
         fragmentTransaction.commit();
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
     public void onAdvancedCalcButtonPressed(View view) {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_container, new AdvancedFragment());
+        fragmentTransaction.replace(R.id.main_container, new AdvancedCalculatorFragment());
         fragmentTransaction.addToBackStack(null);   // dzięki temu zapisujemy replace na stosie i możemy się cofnąć
         fragmentTransaction.commit();
 

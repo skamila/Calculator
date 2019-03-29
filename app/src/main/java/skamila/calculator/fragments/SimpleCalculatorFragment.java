@@ -2,6 +2,7 @@ package skamila.calculator.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +11,16 @@ import android.widget.TextView;
 
 import skamila.calculator.R;
 
-public class SimpleFragment extends Fragment {
+public class SimpleCalculatorFragment extends Fragment {
 
-    private CalculatorButtonListener buttonListener;
-    private TextView display;
+    protected CalculatorButtonListener buttonListener;
+    protected TextView display;
 
-    public SimpleFragment() {
-        // Required empty public constructor
-    }
+
+    public SimpleCalculatorFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.simple,
@@ -37,6 +37,14 @@ public class SimpleFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("onDisplay", (String) display.getText());
+
+    }
+
+    @Override
     public void onAttach (Context context) {
 
         super.onAttach(context);
@@ -48,15 +56,7 @@ public class SimpleFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("onDisplay", (String) display.getText());
-
-    }
-
-    private void setListeners(View view){
+    protected void setListeners(View view){
 
         view.findViewById(R.id.num0).setOnClickListener(digitButtonClick);
         view.findViewById(R.id.num1).setOnClickListener(digitButtonClick);
@@ -85,11 +85,11 @@ public class SimpleFragment extends Fragment {
 
     }
 
-    private View.OnClickListener digitButtonClick = (View view) -> buttonListener.onDigitClick(view);
-    private View.OnClickListener dotButtonClick = (View view) -> buttonListener.onDotClick(view);
-    private View.OnClickListener operationButtonClick = (View view) -> buttonListener.onOperationClick(view);
-    private View.OnClickListener fastOperationButtonClick = (View view) -> buttonListener.onFastOperationClick(view);
-    private View.OnClickListener equalButtonClick = (View view) -> buttonListener.onEqualClick(view);
-    private View.OnClickListener clearButtonClick = (View view) -> buttonListener.onClearClick(view);
+    protected View.OnClickListener digitButtonClick = (View view) -> buttonListener.onDigitClick(view);
+    protected View.OnClickListener dotButtonClick = (View view) -> buttonListener.onDotClick(view);
+    protected View.OnClickListener operationButtonClick = (View view) -> buttonListener.onOperationClick(view);
+    protected View.OnClickListener fastOperationButtonClick = (View view) -> buttonListener.onFastOperationClick(view);
+    protected View.OnClickListener equalButtonClick = (View view) -> buttonListener.onEqualClick(view);
+    protected View.OnClickListener clearButtonClick = (View view) -> buttonListener.onClearClick(view);
 
 }
