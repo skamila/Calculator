@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 
@@ -16,12 +17,15 @@ import skamila.calculator.fragments.AdvancedCalculatorFragment;
 import skamila.calculator.fragments.CalculatorButtonListener;
 import skamila.calculator.fragments.MenuFragment;
 import skamila.calculator.fragments.SimpleCalculatorFragment;
+import skamila.calculator.fragments.exceptions.DivByZeroException;
+import skamila.calculator.fragments.exceptions.NegativeNumberException;
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.MenuEventListener, CalculatorButtonListener {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private String actualNumberOnDisplay;
     private Calculator calculator;
+    private int cClickCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +43,16 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         this.calculator = new Calculator();
         this.actualNumberOnDisplay = "0";
+        cClickCounter = 0;
 
     }
 
     @Override
     public void onSimpleCalcButtonPressed(View view) {
+
+        calculator.clearAll();
+        actualNumberOnDisplay = "0";
+        cClickCounter = 1;
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_container, new SimpleCalculatorFragment());
@@ -54,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
     @Override
     public void onAdvancedCalcButtonPressed(View view) {
+
+        calculator.clearAll();
+        actualNumberOnDisplay = "0";
+        cClickCounter = 1;
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_container, new AdvancedCalculatorFragment());
@@ -80,32 +93,46 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
     @Override
     public void onDigitClick(View view) {
 
+        cClickCounter = 0;
+
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        if (new BigDecimal(actualNumberOnDisplay).equals(new BigDecimal(0))) {
-            try{
-                Integer.parseInt(actualNumberOnDisplay);
-                this.actualNumberOnDisplay = String.valueOf(checkNumber(view));
-            } catch(NumberFormatException e){
+        if(calculator.getActualValue().compareTo(new BigDecimal(999999)) < 0){
+
+            if (new BigDecimal(actualNumberOnDisplay).equals(new BigDecimal(0))) {
+                try{
+                    Integer.parseInt(actualNumberOnDisplay);
+                    this.actualNumberOnDisplay = String.valueOf(checkNumber(view));
+                } catch(NumberFormatException e){
+                    this.actualNumberOnDisplay += checkNumber(view);
+                }
+            } else {
                 this.actualNumberOnDisplay += checkNumber(view);
             }
-        } else {
-            this.actualNumberOnDisplay += checkNumber(view);
+
+            printOnDisplay(display);
         }
 
-        printOnDisplay(display);
+
 
     }
 
     @Override
     public void onDotClick(View view) {
 
+        cClickCounter = 0;
+
         final TextView display = view.getRootView().findViewById(R.id.display);
 
         try {
             Integer.parseInt(this.actualNumberOnDisplay);
-            this.actualNumberOnDisplay += ".";
-            display.setText(display.getText() + ".");
+            if(this.actualNumberOnDisplay.equals("0")){
+                this.actualNumberOnDisplay += ".";
+                display.setText(display.getText() + "0.");
+            } else {
+                this.actualNumberOnDisplay += ".";
+                display.setText(display.getText() + ".");
+            }
         } catch (NumberFormatException e) {
         }
 
@@ -113,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
     @Override
     public void onOperationClick(View view) {
+
+        cClickCounter = 0;
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
@@ -134,10 +163,12 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
+        String prevOperation = calculator.getActualOperation();
         calculator.setActualOperation(checkFastOperation(view));
+        onEqualClick(view);
         calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
-        calculator.doOperation();
-        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
+
+        calculator.setActualOperation(prevOperation);
 
         printOnDisplay(display);
 
@@ -146,12 +177,21 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
     @Override
     public void onEqualClick(View view) {
 
+        cClickCounter = 0;
+
         final TextView display = view.getRootView().findViewById(R.id.display);
 
         calculator.setActualValue(new BigDecimal(actualNumberOnDisplay));
-        calculator.doOperation();
-        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
 
+        try {
+            calculator.doOperation();
+        } catch (DivByZeroException e) {
+            Toast.makeText(getApplicationContext(), "Nie można wykonać dzielenia przez 0.", Toast.LENGTH_SHORT).show();
+        } catch (NegativeNumberException e) {
+            Toast.makeText(getApplicationContext(), "Do operacji nie można użyć liczby ujemnej.", Toast.LENGTH_SHORT).show();
+        }
+
+        actualNumberOnDisplay = String.valueOf(calculator.getActualValue());
         printOnDisplay(display);
 
     }
@@ -161,9 +201,10 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         final TextView display = view.getRootView().findViewById(R.id.display);
 
-        if(checkOperation(view).equals("c")){
+        if(checkOperation(view).equals("c") && ++cClickCounter < 2){
             calculator.clear();
         } else {
+            cClickCounter = 0;
             calculator.clearAll();
         }
 
@@ -189,7 +230,9 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
             text += calculator.getActualOperation();
 
-            text += this.actualNumberOnDisplay;
+            if(!actualNumberOnDisplay.equals("0")){
+                text += this.actualNumberOnDisplay;
+            }
 
             display.setText(text);
 
@@ -205,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
             }
 
         }
+
     }
 
     private int checkNumber(View view) {
@@ -242,35 +286,45 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
             return "×";
         } else if (view.getId() == view.getRootView().findViewById(R.id.div).getId()) {
             return "÷";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.powY).getId()) {
-            return "^";
         } else if (view.getId() == view.getRootView().findViewById(R.id.ac).getId()){
             return "ac";
         } else if (view.getId() == view.getRootView().findViewById(R.id.c).getId()){
             return "c";
+        } else if (view.getRootView().findViewById(R.id.powY) != null
+                && view.getRootView().findViewById(R.id.powY).getId() == view.getId() ) {
+            return "^";
         } else {
             return "";
         }
+
     }
 
     private String checkFastOperation(View view) {
         if (view.getId() == view.getRootView().findViewById(R.id.changeSign).getId()) {
             return "±";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.percent).getId()) {
+        } else if (view.getRootView().findViewById(R.id.percent) != null
+                && view.getId() == view.getRootView().findViewById(R.id.percent).getId()) {
             return "%";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.pow2).getId()) {
+        } else if (view.getRootView().findViewById(R.id.pow2) != null
+                && view.getId() == view.getRootView().findViewById(R.id.pow2).getId()) {
             return "^2";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.root).getId()) {
+        } else if (view.getRootView().findViewById(R.id.root) != null
+                && view.getId() == view.getRootView().findViewById(R.id.root).getId()) {
             return "√";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.log).getId()) {
+        } else if (view.getRootView().findViewById(R.id.log) != null
+                && view.getId() == view.getRootView().findViewById(R.id.log).getId()) {
             return "log";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.root).getId()) {
+        } else if (view.getRootView().findViewById(R.id.ln) != null
+                && view.getId() == view.getRootView().findViewById(R.id.ln).getId()) {
             return "ln";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.sin).getId()) {
+        } else if (view.getRootView().findViewById(R.id.sin) != null
+                && view.getId() == view.getRootView().findViewById(R.id.sin).getId()) {
             return "sin";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.cos).getId()) {
+        } else if (view.getRootView().findViewById(R.id.cos) != null
+                && view.getId() == view.getRootView().findViewById(R.id.cos).getId()) {
             return "cos";
-        } else if (view.getId() == view.getRootView().findViewById(R.id.tan).getId()) {
+        } else if (view.getRootView().findViewById(R.id.tan) != null
+                && view.getId() == view.getRootView().findViewById(R.id.tan).getId()) {
             return "tan";
         } else {
             return "";

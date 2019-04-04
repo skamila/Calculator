@@ -1,6 +1,11 @@
 package skamila.calculator;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
+import skamila.calculator.fragments.exceptions.DivByZeroException;
+import skamila.calculator.fragments.exceptions.NegativeNumberException;
 
 public class Calculator {
 
@@ -39,7 +44,8 @@ public class Calculator {
         this.actualOperation = actualOperation;
     }
 
-    public void doOperation(){
+    public void doOperation() throws DivByZeroException, NegativeNumberException {
+
         switch (actualOperation) {
             case "+":
                 add();
@@ -53,16 +59,30 @@ public class Calculator {
             case "÷":
                 if(this.actualValue.doubleValue() != 0){
                     div();
+                } else {
+                    actualOperation = "";
+                    actualValue = prevValue;
+                    throw new DivByZeroException();
                 }
                 break;
             case "^":
-                powY();
+                if(this.actualValue.doubleValue() >= 0){
+                    powY();
+                } else {
+                    actualOperation = "";
+                    throw new NegativeNumberException();
+                }
                 break;
             case "±":
                 changeSign();
-                break;
+                return;
             case "√":
-                sqr();
+                if(this.actualValue.doubleValue() >= 0){
+                    sqr();
+                } else {
+                    actualOperation = "";
+                    throw new NegativeNumberException();
+                }
                 break;
             case "%":
                 percent();
@@ -80,14 +100,26 @@ public class Calculator {
                 pow2();
                 break;
             case "ln":
-                ln();
+                if(this.actualValue.doubleValue() >= 0){
+                    ln();
+                } else {
+                    actualOperation = "";
+                    throw new NegativeNumberException();
+                }
                 break;
             case "log":
-                log();
+                if(this.actualValue.doubleValue() >= 0){
+                    log();
+                } else {
+                    actualOperation = "";
+                    throw new NegativeNumberException();
+                }
                 break;
         }
 
         actualOperation = "";
+        actualValue = actualValue.round(new MathContext(3, RoundingMode.HALF_UP));
+
     }
 
     public void clear(){
