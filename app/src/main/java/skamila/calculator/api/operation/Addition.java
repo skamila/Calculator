@@ -9,4 +9,9 @@ public class Addition implements Operation {
         return a.add(b);
     }
 
+    @Override
+    public String getSymbol() {
+        return "+";
+    }
+
 }

@@ -5,12 +5,15 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import skamila.calculator.api.exceptions.DivByZeroException;
+import skamila.calculator.api.exceptions.NegativeNumberException;
+
 import static org.junit.Assert.assertThat;
 
 public class DivisionTest {
 
     @Test
-    public void division() {
+    public void division() throws DivByZeroException, NegativeNumberException {
 
         Operation operation = new Division();
         BigDecimal a = new BigDecimal("8.22");

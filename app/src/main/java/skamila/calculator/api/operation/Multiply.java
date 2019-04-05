@@ -9,4 +9,9 @@ public class Multiply implements Operation {
         return a.multiply(b);
     }
 
+    @Override
+    public String getSymbol() {
+        return "×";
+    }
+
 }

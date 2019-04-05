@@ -23,11 +23,8 @@ public class ReversePolishNotation {
 
     }
 
-    public void changeLastNumber(BigDecimal number) {
-
+    public void deleteLastNumber() {
         numbersStack.pop();
-        numbersStack.push(number);
-
     }
 
     public BigDecimal getLastNumber() {
@@ -51,12 +48,6 @@ public class ReversePolishNotation {
         numbersStack.push(result);
 
         return result;
-
-    }
-
-    public void clear() {
-
-        numbersStack.pop();
 
     }
 

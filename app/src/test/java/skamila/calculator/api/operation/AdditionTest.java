@@ -5,12 +5,15 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import skamila.calculator.api.exceptions.DivByZeroException;
+import skamila.calculator.api.exceptions.NegativeNumberException;
+
 import static org.junit.Assert.assertThat;
 
 public class AdditionTest {
 
     @Test
-    public void addition() {
+    public void addition() throws DivByZeroException, NegativeNumberException {
 
         Operation operation = new Addition();
         BigDecimal a = new BigDecimal("8.22");

@@ -17,4 +17,9 @@ public class Division implements Operation {
 
     }
 
+    @Override
+    public String getSymbol() {
+        return "÷";
+    }
+
 }

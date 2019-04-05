@@ -9,4 +9,9 @@ public class Subtraction implements Operation {
         return a.subtract(b);
     }
 
+    @Override
+    public String getSymbol() {
+        return "-";
+    }
+
 }

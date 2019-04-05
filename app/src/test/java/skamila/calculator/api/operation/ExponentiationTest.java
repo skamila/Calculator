@@ -5,12 +5,15 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import skamila.calculator.api.exceptions.DivByZeroException;
+import skamila.calculator.api.exceptions.NegativeNumberException;
+
 import static org.junit.Assert.assertThat;
 
 public class ExponentiationTest {
 
     @Test
-    public void exponentiation() {
+    public void exponentiation() throws DivByZeroException, NegativeNumberException {
 
         Operation operation = new Exponentiation();
         BigDecimal a = new BigDecimal("8.22");

@@ -17,4 +17,9 @@ public class Exponentiation implements Operation {
 
     }
 
+    @Override
+    public String getSymbol() {
+        return "^";
+    }
+
 }

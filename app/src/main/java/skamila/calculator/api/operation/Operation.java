@@ -9,4 +9,6 @@ public interface Operation {
 
     BigDecimal doOperation(BigDecimal a, BigDecimal b) throws DivByZeroException, NegativeNumberException;
 
+    String getSymbol();
+
 }
