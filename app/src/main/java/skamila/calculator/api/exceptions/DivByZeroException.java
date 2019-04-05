@@ -1,4 +1,4 @@
-package skamila.calculator.fragments.exceptions;
+package skamila.calculator.api.exceptions;
 
 public class DivByZeroException extends Exception {
 

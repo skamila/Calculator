@@ -3,6 +3,7 @@ package skamila.calculator.api;
 import java.math.BigDecimal;
 import java.util.Stack;
 
+import skamila.calculator.api.exceptions.*;
 import skamila.calculator.api.fast_operation.FastOperation;
 import skamila.calculator.api.operation.Operation;
 
@@ -22,7 +23,18 @@ public class ReversePolishNotation {
 
     }
 
-    public BigDecimal doOperation(Operation operation) {
+    public void changeLastNumber(BigDecimal number) {
+
+        numbersStack.pop();
+        numbersStack.push(number);
+
+    }
+
+    public BigDecimal getLastNumber() {
+        return numbersStack.peek();
+    }
+
+    public BigDecimal doOperation(Operation operation) throws DivByZeroException, NegativeNumberException {
 
         BigDecimal a = numbersStack.pop();
         BigDecimal b = numbersStack.pop();
@@ -33,7 +45,7 @@ public class ReversePolishNotation {
 
     }
 
-    public BigDecimal doFastOperation(FastOperation operation) {
+    public BigDecimal doFastOperation(FastOperation operation) throws NegativeNumberException {
 
         BigDecimal result = operation.doOperation(numbersStack.pop());
         numbersStack.push(result);
