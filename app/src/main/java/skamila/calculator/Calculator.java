@@ -1,8 +1,6 @@
 package skamila.calculator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
 import skamila.calculator.fragments.exceptions.DivByZeroException;
 import skamila.calculator.fragments.exceptions.NegativeNumberException;
@@ -34,6 +32,10 @@ public class Calculator {
     public void archiveValue(){
         this.prevValue = actualValue;
         actualValue = new BigDecimal(0);
+    }
+
+    public void setPrevValue(BigDecimal prevValue){
+        this.prevValue = prevValue;
     }
 
     public void setActualValue(BigDecimal actualValue){
@@ -118,7 +120,7 @@ public class Calculator {
         }
 
         actualOperation = "";
-        actualValue = actualValue.round(new MathContext(3, RoundingMode.HALF_UP));
+        //actualValue = actualValue.round(new MathContext(3, RoundingMode.HALF_UP));
 
     }
 

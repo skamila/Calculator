@@ -1,5 +1,6 @@
 package skamila.calculator.activities;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -38,12 +39,31 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.main_container, new MenuFragment());
             fragmentTransaction.commit();
+            this.calculator = new Calculator();
+            this.actualNumberOnDisplay = "0";
+            cClickCounter = 0;
+
+        } else {
+            this.calculator = new Calculator();
+            this.actualNumberOnDisplay = savedInstanceState.getString("actualNumberOnDisplay");
+            BigDecimal tmp = new BigDecimal(savedInstanceState.getString("actualNumber"));
+            BigDecimal tmp2 = new BigDecimal(savedInstanceState.getString("prevValue"));
+            this.calculator.setActualOperation(savedInstanceState.getString("actualOper"));
+            this.calculator.setActualValue(tmp);
+            this.calculator.setPrevValue(tmp2);
 
         }
 
-        this.calculator = new Calculator();
-        this.actualNumberOnDisplay = "0";
-        cClickCounter = 0;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("actualNumberOnDisplay", actualNumberOnDisplay);
+        savedInstanceState.putString("actualNumber", String.valueOf((calculator.getActualValue())));
+        savedInstanceState.putString("prevValue", String.valueOf((calculator.getPrevValue())));
+        savedInstanceState.putString("actualOper", calculator.getActualOperation());
 
     }
 
@@ -99,18 +119,22 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         if(calculator.getActualValue().compareTo(new BigDecimal(999999)) < 0){
 
-            if (new BigDecimal(actualNumberOnDisplay).equals(new BigDecimal(0))) {
+            if (actualNumberOnDisplay.equals("0")) {
                 try{
                     Integer.parseInt(actualNumberOnDisplay);
                     this.actualNumberOnDisplay = String.valueOf(checkNumber(view));
                 } catch(NumberFormatException e){
                     this.actualNumberOnDisplay += checkNumber(view);
                 }
+                printOnDisplay(display);
+
             } else {
                 this.actualNumberOnDisplay += checkNumber(view);
+                printOnDisplay(display);
             }
 
-            printOnDisplay(display);
+
+
         }
 
 
@@ -126,9 +150,9 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
         try {
             Integer.parseInt(this.actualNumberOnDisplay);
-            if(this.actualNumberOnDisplay.equals("0")){
+            if(this.actualNumberOnDisplay.equals("0") && !calculator.getActualOperation().equals("")){
                 this.actualNumberOnDisplay += ".";
-                display.setText(display.getText() + "0.");
+                display.setText(display.getText());
             } else {
                 this.actualNumberOnDisplay += ".";
                 display.setText(display.getText() + ".");
@@ -221,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
             String text = "";
 
-            if (calculator.getPrevValue().doubleValue() % 1 == 0) {
+            if (calculator.getPrevValue().doubleValue() % 1 == 0 && !actualNumberOnDisplay.contains(".")) {
                 int result = calculator.getPrevValue().intValue();
                 text += String.valueOf(result);
             } else {
@@ -230,21 +254,21 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.Menu
 
             text += calculator.getActualOperation();
 
-            if(!actualNumberOnDisplay.equals("0")){
+//            if(!actualNumberOnDisplay.equals("0")){
                 text += this.actualNumberOnDisplay;
-            }
+//            }
 
             display.setText(text);
 
         } else {
 
-            display.setText(String.valueOf(calculator.getActualOperation()));
+            //display.setText(String.valueOf(calculator.getActualOperation()));
 
-            if (calculator.getActualValue().doubleValue() % 1 == 0) {
+            if (calculator.getActualValue().doubleValue() % 1 == 0 && !actualNumberOnDisplay.contains(".")) {
                 int result = calculator.getActualValue().intValue();
                 display.setText(String.valueOf(result));
             } else {
-                display.setText(String.valueOf(calculator.getActualValue()));
+                display.setText(String.valueOf(actualNumberOnDisplay));
             }
 
         }
